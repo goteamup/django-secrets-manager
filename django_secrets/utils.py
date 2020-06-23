@@ -11,7 +11,13 @@ class SettingKeyNotExists(Exception):
         return f'SettingKeyNotExists ({", ".join(self.names)})'
 
 
-def setting(available_names, default=None, settings_module=None, lookup_env=True, raise_exception=False):
+def setting(
+    available_names,
+    default=None,
+    settings_module=None,
+    lookup_env=True,
+    raise_exception=False,
+):
     """
     Helper function to get a Django setting by name. If setting doesn't exists
     it will return a default.
