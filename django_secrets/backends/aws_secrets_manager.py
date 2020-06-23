@@ -2,8 +2,11 @@ import importlib
 import inspect
 import json
 import os
-from json import JSONDecodeError
-from typing import Sequence, Union, Dict, Optional
+
+try:
+    from json import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
 
 from django.conf import ENVIRONMENT_VARIABLE
 from django.core.exceptions import ImproperlyConfigured
@@ -82,9 +85,11 @@ class AWSSecretsManagerSecrets(Secrets):
         self._secrets = {}
 
         settings_module = os.environ.get(ENVIRONMENT_VARIABLE)
-        mod = importlib.import_module(settings_module)
-        if not hasattr(mod, "SECRET_KEY"):
-            setattr(mod, "SECRET_KEY", self.TEMP_SECRET_KEY)
+
+        if settings_module:
+            mod = importlib.import_module(settings_module)
+            if not hasattr(mod, "SECRET_KEY"):
+                setattr(mod, "SECRET_KEY", self.TEMP_SECRET_KEY)
 
     def get_client(self, settings_module):
         profile = setting(self.profile_names, settings_module=settings_module)
@@ -105,9 +110,7 @@ class AWSSecretsManagerSecrets(Secrets):
             raise CredentialsNotExists()
         return session.client("secretsmanager")
 
-    def get_secret_section(
-        self, secret_name: str, section: Optional[str] = None
-    ) -> Union[Sequence, Dict]:
+    def get_secret_section(self, secret_name, section=None):
         """
         Search for Secret with nested JSON structure and return a specific section
          Use ':'to separate nested steps when searching

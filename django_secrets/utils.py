@@ -1,14 +1,18 @@
 import inspect
 import os
-from typing import Iterable
+
+try:
+    from typing import Iterable
+except ImportError:
+    from collections import Iterable
 
 
 class SettingKeyNotExists(Exception):
-    def __init__(self, names: Iterable):
+    def __init__(self, names):
         self.names = names
 
     def __str__(self):
-        return f'SettingKeyNotExists ({", ".join(self.names)})'
+        return "SettingKeyNotExists ({names})".format(names=", ".join(self.names))
 
 
 def setting(
