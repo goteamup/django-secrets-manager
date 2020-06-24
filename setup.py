@@ -17,7 +17,7 @@ setup(
     license="MIT",
     packages=find_packages(exclude=["test*"]),
     install_requires=["boto3", "django",],
-    python_requires=">3.5",
+    python_requires=">=2.7",
     url="https://github.com/LeeHanYeong/django-secrets-manager",
     zip_safe=True,
     classifiers=["Framework :: Django", "Programming Language :: Python",],
